@@ -46,6 +46,7 @@
   <ItemGroup>
      <Compile Include="Assets\CubeMover.cs" />
      <Compile Include="Assets\Menu.cs" />
+     <Compile Include="Assets\MouseRts.cs" />
      <Compile Include="Assets\generationMap.cs" />
      <None Include="Assets\Necromancer GUI\Kingthings.txt" />
      <None Include="Assets\Necromancer GUI\Readme.txt" />
