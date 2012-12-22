@@ -12,6 +12,7 @@ public class generationMap : MonoBehaviour {
 	public int gridHeight;
 	
 	public float ratioWater;
+	public int waterHexNumber;
 	
 	private float hexWidth;
     private float hexHeight;
@@ -90,19 +91,19 @@ public class generationMap : MonoBehaviour {
         {
             for (int x = 0; x < gridWidth; x++)
             {
-				if(x==0 || y==0 || x==gridWidth-1 || y==gridHeight-1)
+				if(x<waterHexNumber || y<waterHexNumber || x >= gridWidth-waterHexNumber || y >= gridHeight-waterHexNumber)
 					mapTable[x,y] = (GameObject)Instantiate(HexWater);
 				else{
 					if(y%2==0){
 						if(mapTable[x-1,y].name.Equals("HexWater(Clone)") || mapTable[x,y-1].name.Equals("HexWater(Clone)") ||
-							mapTable[x-1,y-1].name.Equals("HexWater(Clone)") || x == gridWidth-2 || y == gridHeight-2){
+							mapTable[x-1,y-1].name.Equals("HexWater(Clone)") || x == gridWidth-(waterHexNumber+1) || y == gridHeight-(waterHexNumber+1)){
 							generateBeach(x,y);
 						}else{
 							mapTable[x,y] = (GameObject)Instantiate(HexPlaine);
 						}
 					}else{
 						if(mapTable[x-1,y].name.Equals("HexWater(Clone)") || mapTable[x,y-1].name.Equals("HexWater(Clone)") ||
-							mapTable[x+1,y-1].name.Equals("HexWater(Clone)") || x == gridWidth-2 || y == gridHeight-2){
+							mapTable[x+1,y-1].name.Equals("HexWater(Clone)") || x == gridWidth-(waterHexNumber+1) || y == gridHeight-(waterHexNumber+1)){
 							generateBeach(x,y);
 						}else{
 							mapTable[x,y] = (GameObject)Instantiate(HexPlaine);
@@ -127,9 +128,9 @@ public class generationMap : MonoBehaviour {
 	}
 	
 	void checkMap(){
-		for (int y = 1; y < gridHeight-1; y++)
+		for (int y = 1; y < gridHeight-waterHexNumber; y++)
         {
-            for (int x = 1; x < gridWidth-1; x++)
+            for (int x = 1; x < gridWidth-waterHexNumber; x++)
             {
 				if(mapTable[x,y].name.Equals("HexPlaine(Clone)")){
 					if(y%2==0){
