@@ -8,8 +8,8 @@ public class MouseRts : MonoBehaviour
     public int ScrollSpeed = 25;
     public int DragSpeed = 100;
  
-    public int ZoomSpeed = 25;
-    public int ZoomMin = 20;
+    public int ZoomSpeed = 5;
+    public int ZoomMin = -10;
     public int ZoomMax = 100;
  
     public int PanSpeed = 50;
@@ -21,14 +21,29 @@ public class MouseRts : MonoBehaviour
     {
         // Init camera translation for this frame.
         var translation = Vector3.zero;
- 
+ 		
+		
+		// Move camera with arrow keys
+        translation += new Vector3(Input.GetAxis("Horizontal")/270*camera.fieldOfView, Input.GetAxis("Vertical")/270*camera.fieldOfView, 0);
+		
+		
         // Zoom in or out
         var zoomDelta = Input.GetAxis("Mouse ScrollWheel")*ZoomSpeed*Time.deltaTime;
         if (zoomDelta!=0)
         {
-            translation -= Vector3.up * ZoomSpeed * zoomDelta;
+            //translation -= Vector3.up * ZoomSpeed * zoomDelta;
+			if(camera.fieldOfView+zoomDelta > 4.5 && (camera.transform.eulerAngles.x+zoomDelta/ZoomSpeed > 280 || camera.transform.eulerAngles.x+zoomDelta/ZoomSpeed < camera.transform.eulerAngles.x)){
+				camera.fieldOfView += zoomDelta;
+				camera.transform.RotateAround(Vector3.right, zoomDelta/ZoomSpeed);
+				
+				if(camera.transform.eulerAngles.x < 280){
+					camera.transform.eulerAngles.Set(0, 0, 0);	
+				}
+			}
         }
- 
+ 	
+		/*
+		 * 
         // Start panning camera if zooming in close to the ground or if just zooming out.
         var pan = camera.transform.eulerAngles.x - zoomDelta * PanSpeed;
         pan = Mathf.Clamp(pan, PanAngleMin, PanAngleMax);
@@ -36,9 +51,6 @@ public class MouseRts : MonoBehaviour
         {
             camera.transform.eulerAngles = new Vector3(pan, 0, 0);
         }
- 
-        // Move camera with arrow keys
-        translation += new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
  
         // Move camera with mouse
         if (Input.GetMouseButton(2)) // MMB
@@ -70,14 +82,20 @@ public class MouseRts : MonoBehaviour
                 translation += Vector3.forward * ScrollSpeed * Time.deltaTime;
             }
         }
+        
+        */
  
         // Keep camera within level and zoom area
+		GameObject map = GameObject.Find("Map");
+		int width = map.GetComponent<generationMap>().gridWidth;
+		int height = map.GetComponent<generationMap>().gridWidth;
+		
         var desiredPosition = camera.transform.position + translation;
-        if (desiredPosition.x < -LevelArea || LevelArea < desiredPosition.x)
+        if (desiredPosition.x < -(width*0.25*0.86) || (width*0.25*0.86) < desiredPosition.x)
         {
             translation.x = 0;
         }
-        if (desiredPosition.y < ZoomMin || ZoomMax < desiredPosition.y)
+        if (desiredPosition.y < -(height*0.5*0.84) || (height*0.25*0.86) < desiredPosition.y)
         {
             translation.y = 0;
         }
